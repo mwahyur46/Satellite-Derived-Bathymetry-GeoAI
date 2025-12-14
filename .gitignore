@@ -1,5 +1,4 @@
 # Ignore these files as they are typically large data
-*.py
 *.tif
 *.tiff
 *.geotiff
