@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.stats import linregress
 import matplotlib.pyplot as plt
+import rasterio as rio
 import os
 
 def sunglint_correction(visible_bands, nir_band, output_dir=None, image_id=None, plot_graphs=False):
@@ -161,3 +162,35 @@ def calculate_mndwi(green_band, swir_band):
     # Fill NaNs with -1 (Non-water)        
     mndwi = np.nan_to_num(mndwi, nan=-1.0)
     return mndwi
+
+# Extract raster pixel values
+def extract_raster_value(sample_points, raster_path, depth_column):
+    """
+    Extracts raster values at point locations using rasterio.sample (Fast Method).
+    """
+    import os
+    import rasterio
+    import numpy as np
+    
+    print(f"Processing: {os.path.basename(raster_path)}")
+
+    with rasterio.open(raster_path) as src:
+        # 1. Check and match CRS
+        if sample_points.crs != src.crs:
+            print(f"  - Reprojecting points from {sample_points.crs} to {src.crs}...")
+            sample_points = sample_points.to_crs(src.crs)
+        
+        # 2. Prepare coordinates for sampling
+        coord_list = [(x, y) for x, y in zip(sample_points.geometry.x, sample_points.geometry.y)]
+
+        # 3. Sample the raster
+        print(f"  - Extracting pixel values for {len(coord_list)} points...")
+        sampled_values = list(src.sample(coord_list))
+
+        # Convert to Numpy Array
+        pixel_values = np.array(sampled_values) 
+
+        # 4. Get depth labels using the PASSED argument name
+        depth_values = sample_points[depth_column].values 
+
+    return pixel_values, depth_values
