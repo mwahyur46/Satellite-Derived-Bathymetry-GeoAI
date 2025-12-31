@@ -1,6 +1,6 @@
 # Satellite-Derived Bathymetry (SDB) with Geospatial Artificial Intelligence (GeoAI) Model
 
-A comprehensive Machine Learning workflow for estimating shallow water depth (bathymetry) using **Sentinel-2 multispectral imagery** and **Google Satellite Embeddings**. This repository provides an end-to-end pipeline—from radiometric correction and feature extraction to model training and spatial inference.
+A comprehensive Machine Learning workflow for estimating shallow water depth (bathymetry) using **Sentinel-2 multispectral imagery** and **Google Satellite Embeddings**. This repository provides an end-to-end pipeline, from radiometric correction and feature extraction to model training and spatial inference.
 
 ## Overview
 
