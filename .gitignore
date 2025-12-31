@@ -2,13 +2,13 @@
 *.tif
 *.tiff
 *.geotiff
-*.shp
-*.dbf
-*.prj
-*.shx
-*.cpg
-*.qmd
-*.geojson
+# *.shp
+# *.dbf
+# *.prj
+# *.shx
+# *.cpg
+# *.qmd
+# *.geojson
 *.gpkg
 *.csv
 *.xlsx
@@ -18,7 +18,7 @@
 *.yaml
 *.jpg
 *.jpeg
-*.png
+# *.png
 *.qgz
 *.npy
 *.pkl
