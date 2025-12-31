@@ -1,7 +1,3 @@
-Here is the updated `README.md`. I have integrated the Google Earth Engine download link into the **Satellite Data Sources** section, making it easy for users to access the exact dataset used for the project.
-
----
-
 # Satellite-Derived Bathymetry (SDB) with XGBoost
 
 A comprehensive Machine Learning workflow for estimating shallow water depth (bathymetry) using **Sentinel-2 multispectral imagery** and **Google Satellite Embeddings**. This repository provides an end-to-end pipeline—from radiometric correction and feature extraction to model training and spatial inference.
