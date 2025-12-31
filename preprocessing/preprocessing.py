@@ -1,26 +1,38 @@
-import numpy as np
-from scipy.stats import linregress
-import matplotlib.pyplot as plt
-import rasterio as rio
+"""
+Satellite-Derived Bathymetry (SDB) Preprocessing Utilities.
+
+This module provides functions for radiometric correction (sunglint removal),
+water masking indices (NDWI/MNDWI), and spatial data extraction required for
+processing Sentinel-2 imagery.
+
+References:
+    Hedley, J. D., Harborne, A. R., & Mumby, P. J. (2005). 
+    Technical note: Simple and robust removal of sun glint for mapping shallow‐water benthos. 
+    International Journal of Remote Sensing, 26(10), 2107–2112.
+    https://doi.org/10.1080/01431160500034086
+
+    Sunglint correction code adapted from github repository:
+    https://github.com/GeoscienceAustralia/sun-glint-correction/tree/develop
+"""
+
 import os
+import numpy as np
+import rasterio
+import matplotlib.pyplot as plt
+from scipy.stats import linregress
 
 def sunglint_correction(visible_bands, nir_band, output_dir=None, image_id=None, plot_graphs=False):
     """
     Applies the Hedley et al. (2005) sunglint correction method.
     
-    Reference:
-    https://github.com/GeoscienceAustralia/sun-glint-correction/tree/develop
-    
-    Citation:
-    Hedley, J. D., Harborne, A. R., & Mumby, P. J. (2005). 
-    Simple and robust removal of sun glint for mapping shallow-water benthos. 
-    International Journal of Remote Sensing, 26(10), 2107-2112.
-    
+    Uses linear regression between NIR and visible bands over deep water 
+    to remove the glint component.
+
     Args:
         visible_bands (list): List of 2D numpy arrays [Blue, Green, Red].
         nir_band (numpy.ndarray): 2D numpy array for NIR.
-        output_dir (str): Path to save QC plots.
-        image_id (str): Identifier for the plot title.
+        output_dir (str, optional): Path to save QC plots.
+        image_id (str, optional): Identifier for the plot title.
         plot_graphs (bool): Enable/Disable plotting.
         
     Returns:
@@ -33,12 +45,14 @@ def sunglint_correction(visible_bands, nir_band, output_dir=None, image_id=None,
     if not np.any(valid_mask):
         return np.array(visible_bands)
 
-    # Use lowest 20% of NIR as deep water proxy
+    # Use lowest 20% of NIR pixels as a proxy for deep water
     threshold_val = np.percentile(nir[valid_mask], 20)
     sample_mask = (nir > 0) & (nir <= threshold_val)
     
+    # Fallback if insufficient deep water pixels found
     if np.sum(sample_mask) < 1000:
-        print(f"  [Warning] {image_id}: Insufficient deep water pixels. Simple subtraction used.")
+        if image_id:
+            print(f"  [Warning] {image_id}: Insufficient deep water pixels. Simple subtraction used.")
         return [np.clip(b - nir, 0, None) for b in visible_bands]
 
     nir_samples = nir[sample_mask]
@@ -58,18 +72,23 @@ def sunglint_correction(visible_bands, nir_band, output_dir=None, image_id=None,
         # Calculate Slope: Visible = Slope * NIR + Intercept
         slope, intercept, r_val, _, _ = linregress(nir_samples, vis_samples)
         
-        if slope < 0: slope = 0
+        # Enforce physical constraint
+        if slope < 0: 
+            slope = 0
         
         # Apply Hedley Formula
         glint_component = slope * (nir - min_nir)
         corrected = vis_band - glint_component
-        corrected = np.clip(corrected, 0, None) # Remove negative values
+        corrected = np.clip(corrected, 0, None)  # Remove negative values
         corrected_bands.append(corrected)
 
         # Plot result
         if plot_graphs and output_dir:
             ax = axes[i]
-            subset = np.random.choice(len(nir_samples), size=min(2000, len(nir_samples)), replace=False)
+            # Subsample points for performance
+            subset_size = min(2000, len(nir_samples))
+            subset = np.random.choice(len(nir_samples), size=subset_size, replace=False)
+            
             ax.scatter(nir_samples[subset], vis_samples[subset], alpha=0.1, s=1, c='gray')
             
             x_vals = np.array([np.min(nir_samples), np.max(nir_samples)])
@@ -87,19 +106,11 @@ def sunglint_correction(visible_bands, nir_band, output_dir=None, image_id=None,
 
 def simple_sunglint_correction(visible_bands, nir_band):
     """
-    Applies the "Simple Glint Removal" (NIR Subtraction) method.
-    This mimics the GEE logic: Corrected = Visible - NIR.
-    
-    Ref: Lines 63-64 of user provided GEE script.
-    
-    Citation (Methodological Basis):
-    Hedley, J. D., Harborne, A. R., & Mumby, P. J. (2005). 
-    Simple and robust removal of sun glint for mapping shallow-water benthos. 
-    International Journal of Remote Sensing, 26(10), 2107-2112.
+    Applies simple glint subtraction (Visible - NIR).
     
     Args:
         visible_bands (list): List of 2D numpy arrays [Blue, Green, Red].
-        nir_band (numpy.ndarray): 2D numpy array for NIR (Band 8).
+        nir_band (numpy.ndarray): 2D numpy array for NIR.
         
     Returns:
         list: [Corrected_Blue, Corrected_Green, Corrected_Red]
@@ -108,14 +119,9 @@ def simple_sunglint_correction(visible_bands, nir_band):
     corrected_bands = []
     
     for band in visible_bands:
-        # Practical Approach: Simple Subtraction
-        # "Subtract the NIR signal from the Visible signal"
+        # Simple Subtraction
         corrected = band - nir
-        
-        # Physics Check: Light cannot be negative. 
-        # Clip values < 0 to 0 (or a small epsilon like 0.0001 if needed)
         corrected = np.clip(corrected, 0, None)
-        
         corrected_bands.append(corrected)
         
     return corrected_bands
@@ -124,54 +130,40 @@ def calculate_ndwi(green_band, nir_band):
     """
     Calculates the Normalized Difference Water Index (NDWI).
     Formula: (Green - NIR) / (Green + NIR)
-    
-    Args:
-        green_band (numpy.ndarray): Green band (preferably glint-corrected).
-        nir_band (numpy.ndarray): NIR band (original).
-        
-    Returns:
-        numpy.ndarray: NDWI image (values between -1 and 1).
     """
-    # Allow division by zero (results in NaN, handled later)
     with np.errstate(divide='ignore', invalid='ignore'):
         numerator = green_band - nir_band
         denominator = green_band + nir_band
         ndwi = numerator / denominator
         
-    # Fill NaNs (where Green+NIR = 0) with -1 (Non-water)
     ndwi = np.nan_to_num(ndwi, nan=-1.0)
-    
     return ndwi
 
 def calculate_mndwi(green_band, swir_band):
     """
     Calculates the Modified Normalized Difference Water Index (MNDWI).
     Formula: (Green - SWIR) / (Green + SWIR)
-    
-    Why use this?
-    SWIR is absorbed more strongly by water than NIR, making this index 
-    more robust against glint and turbidity (fewer holes in the mask).
     """
-    
-    # Allow division by zero
     with np.errstate(divide='ignore', invalid='ignore'):
-            numerator = green_band - swir_band
-            denominator = green_band + swir_band
-            mndwi = numerator / denominator
+        numerator = green_band - swir_band
+        denominator = green_band + swir_band
+        mndwi = numerator / denominator
     
-    # Fill NaNs with -1 (Non-water)        
     mndwi = np.nan_to_num(mndwi, nan=-1.0)
     return mndwi
 
-# Extract raster pixel values
 def extract_raster_value(sample_points, raster_path, depth_column):
     """
-    Extracts raster values at point locations using rasterio.sample (Fast Method).
-    """
-    import os
-    import rasterio
-    import numpy as np
+    Extracts raster pixel values at specific point coordinates.
     
+    Args:
+        sample_points (GeoDataFrame): Points containing geometry and depth labels.
+        raster_path (str): Path to the raster file.
+        depth_column (str): Name of the column containing depth values.
+        
+    Returns:
+        tuple: (pixel_values_array, depth_values_array)
+    """
     print(f"Processing: {os.path.basename(raster_path)}")
 
     with rasterio.open(raster_path) as src:
@@ -190,7 +182,7 @@ def extract_raster_value(sample_points, raster_path, depth_column):
         # Convert to Numpy Array
         pixel_values = np.array(sampled_values) 
 
-        # 4. Get depth labels using the PASSED argument name
+        # 4. Get depth labels
         depth_values = sample_points[depth_column].values 
 
     return pixel_values, depth_values
