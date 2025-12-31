@@ -113,3 +113,6 @@ The methodology and code structure in this repository are adapted from and inspi
 3. **Hedley, J. D., Harborne, A. R., & Mumby, P. J.** (2005). Technical note: Simple and robust removal of sun glint for mapping shallow‐water benthos. *International Journal of Remote Sensing*, 26(10), 2107–2112. [https://doi.org/10.1080/01431160500034086](https://doi.org/10.1080/01431160500034086)
 4. **Sagawa, T., Yamashita, Y., Okumura, T., & Yamanokuchi, T.** (2019). Satellite derived bathymetry using machine learning and Multi-Temporal satellite images. *Remote Sensing*, 11(10), 1155. [https://doi.org/10.3390/rs11101155](https://doi.org/10.3390/rs11101155)
 5. **Wicaksono, P., Harahap, S. D., & Hendriana, R.** (2023). Satellite-derived bathymetry from WorldView-2 based on linear and machine learning regression in the optically complex shallow water of the coral reef ecosystem of Kemujan Island. *Remote Sensing Applications Society and Environment*, 33, 101085. [https://doi.org/10.1016/j.rsase.2023.101085](https://doi.org/10.1016/j.rsase.2023.101085)
+
+---
+*Created by [M. Wahyu R.](https://www.linkedin.com/in/mwahyur) | 2025*
