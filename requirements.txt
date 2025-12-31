@@ -1,0 +1,13 @@
+earthengine_api==1.7.1
+ee==0.2
+geemap==0.36.6
+geopandas==1.1.2
+joblib==1.4.2
+matplotlib==3.10.8
+numpy==2.4.0
+pandas==2.3.3
+rasterio==1.4.4
+scikit_learn==1.8.0
+scipy==1.16.3
+tqdm==4.67.0
+xgboost==3.1.2
