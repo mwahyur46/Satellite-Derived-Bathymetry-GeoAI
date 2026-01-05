@@ -50,10 +50,10 @@ To facilitate reproduction, a Google Earth Engine script is provided to download
 ├── train-test dataset/  # Extracted spectral/embedding values paired with depth
 │   └── embeddings/      # Specific training sets for the embeddings workflow
 │
-├── 1. preprocessing.ipynb                      # Standard Sentinel-2 workflow
-├── 1. preprocessing_satellite_embeddings.ipynb # Deep Learning Embeddings workflow
-├── 2. model train-test.ipynb                   # Model training & evaluation
-└── 3. model inference.ipynb                    # Map generation
+├── 01_preprocessing.ipynb                      # Standard Sentinel-2 workflow
+├── 01_preprocessing_satellite_embeddings.ipynb # Deep Learning Embeddings workflow
+├── 02_model train-test.ipynb                   # Model training & evaluation
+└── 03_model inference.ipynb                    # Map generation
 
 ```
 
