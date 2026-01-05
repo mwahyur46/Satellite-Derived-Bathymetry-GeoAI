@@ -1,14 +1,14 @@
 # Satellite-Derived Bathymetry (SDB) with Geospatial Artificial Intelligence (GeoAI) Model
 
-A comprehensive Machine Learning workflow for estimating shallow water depth (bathymetry) using **Sentinel-2 multispectral imagery** and **Google Satellite Embeddings**. This repository provides an end-to-end pipeline—from radiometric correction and feature extraction to model training and spatial inference.
+A comprehensive Machine Learning workflow for estimating shallow water depth (bathymetry) using **Sentinel-2** and **Google Satellite Embeddings**. This repository provides an end-to-end pipeline, from radiometric correction and feature extraction to model training and spatial inference.
 
 ## Overview
 
 Satellite-Derived Bathymetry (SDB) is a cost-effective alternative to traditional hydrographic surveys, utilizing remote sensing data to model the relationship between spectral reflectance and water depth. This project leverages the **XGBoost** (Extreme Gradient Boosting) regressor to capture the non-linear complexities of optically shallow waters.
 
-This repository is designed for **geospatial data scientists, hydrographers, and students** interested in:
+This repository is designed for **geospatial researchers, practitioners, hydrographers, and enthusiasts** interested in:
 
-* **Preprocessing:** Atmospheric and sunglint correction (Hedley method) for coastal imagery.
+* **Preprocessing:** Atmospheric and sunglint correction (Hedley method) for coastal remote sensing data.
 * **Feature Engineering:** Utilizing spectral bands vs. deep learning embeddings.
 * **ML Regression:** Training and validating bathymetric models.
 * **Mapping:** Generating continuous bathymetric raster maps (GeoTIFF).
@@ -89,7 +89,7 @@ Choose **one** of the following paths depending on your input data:
 * Loads the trained model artifact (`.pkl`).
 * Predicts depth values for every pixel in the target satellite scene.
 * Exports the result as a **GeoTIFF**.
-* Generates a side-by-side visualization (True Color vs. Predicted Depth).
+* Generates a side-by-side visualization map (True Color vs. Predicted Depth).
 
 ## Installation
 
