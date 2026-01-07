@@ -65,26 +65,26 @@ This project is structured as a sequential pipeline. Run the Jupyter Notebooks i
 
 Choose **one** of the following paths depending on your input data:
 
-* **Option A: Standard Multispectral (`1. preprocessing.ipynb`)**
+* **Option A: Standard Multispectral (`01_preprocessing.ipynb`)**
 * Performs **Sunglint Correction** using the method by *Hedley et al. (2005)*.
 * Applies **MNDWI** (Modified Normalized Difference Water Index) to mask land and clouds.
 * Extracts spectral reflectance values at the coordinates of the sounding data.
 
 
-* **Option B: Embeddings (`1. preprocessing_satellite_embeddings.ipynb`)**
+* **Option B: Embeddings (`01_preprocessing_satellite_embeddings.ipynb`)**
 * Utilizes 64-dimensional vectors from Google's pre-trained satellite model.
 * Handles data extraction and preparation specifically for high-dimensional feature spaces.
 
 
 
-### 2. Model Training (`2. model train-test.ipynb`)
+### 2. Model Training (`02_model train-test.ipynb`)
 
 * Loads the training/testing datasets generated in Step 1.
 * Performs **Hyperparameter Tuning** on the XGBoost regressor.
 * Evaluates performance using **RMSE** (Root Mean Squared Error), **MAE**, and ****.
 * Visualizes Feature Importance to interpret the model.
 
-### 3. Inference & Mapping (`3. model inference.ipynb`)
+### 3. Inference & Mapping (`03_model inference.ipynb`)
 
 * Loads the trained model artifact (`.pkl`).
 * Predicts depth values for every pixel in the target satellite scene.
