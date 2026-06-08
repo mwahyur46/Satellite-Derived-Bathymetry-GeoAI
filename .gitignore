@@ -2,13 +2,6 @@
 *.tif
 *.tiff
 *.geotiff
-# *.shp
-# *.dbf
-# *.prj
-# *.shx
-# *.cpg
-# *.qmd
-# *.geojson
 *.gpkg
 *.csv
 *.xlsx
@@ -23,6 +16,18 @@
 *.npy
 *.pkl
 *.pklz
+data/*.shp
+data/*.shx
+data/*.dbf
+data/*.prj
+data/*.cpg
+data/*.sbn
+data/*.sbx
+data/sounding/
+data/*.geojson
+
+# Keep folder structure visible on GitHub via .gitkeep
+!data/sounding/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
