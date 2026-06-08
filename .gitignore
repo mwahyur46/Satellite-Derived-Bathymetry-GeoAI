@@ -16,16 +16,21 @@
 *.npy
 *.pkl
 *.pklz
-data/*.shp
-data/*.shx
-data/*.dbf
-data/*.prj
-data/*.cpg
-data/*.sbn
-data/*.sbx
-data/sounding/
-data/*.geojson
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.sbn
+*.sbx
+*.geojson
+data/sounding/*
 !data/sounding/.gitkeep
+data/embeddings/*
+!data/embeddings/.gitkeep
+data/corrected/*
+!data/corrected/.gitkeep
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
