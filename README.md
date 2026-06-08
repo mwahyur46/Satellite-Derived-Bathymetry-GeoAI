@@ -2,6 +2,10 @@
 
 A comprehensive Machine Learning workflow for estimating shallow water depth (bathymetry) using **Sentinel-2** and **Google Satellite Embeddings**. This repository provides an end-to-end pipeline, from radiometric correction and feature extraction to model training and spatial inference.
 
+<p align="center">
+  <img src="output/SDB_Gili_Ketapang_2018_s2.png" alt="Predicted bathymetry over Gili Ketapang" width="80%">
+</p>
+
 ## Overview
 
 Satellite-Derived Bathymetry (SDB) is a cost-effective alternative to traditional hydrographic surveys, utilizing remote sensing data to model the relationship between spectral reflectance and water depth. This project leverages the **XGBoost** (Extreme Gradient Boosting) regressor to capture the non-linear complexities of optically shallow waters.
@@ -66,22 +70,25 @@ This project is structured as a sequential pipeline. Run the Jupyter Notebooks i
 Choose **one** of the following paths depending on your input data:
 
 * **Option A: Standard Multispectral (`01_preprocessing.ipynb`)**
-* Performs **Sunglint Correction** using the method by *Hedley et al. (2005)*.
-* Applies **MNDWI** (Modified Normalized Difference Water Index) to mask land and clouds.
-* Extracts spectral reflectance values at the coordinates of the sounding data.
+  * Performs **Sunglint Correction** using the method by *Hedley et al. (2005)*.
+  * Applies **MNDWI** (Modified Normalized Difference Water Index) to mask land and clouds.
+  * Extracts spectral reflectance values at the coordinates of the sounding data.
 
+  The Hedley deglint algorithm fits a linear regression between a deep-water NIR reference and each visible band. The slope is then used to subtract the glint contribution from each pixel. The figure below shows the per-band regression diagnostics used to derive the correction:
+
+  <p align="center">
+    <img src="data/corrected/plot/plot_s2_giliketapang_2018-05-31.tif.png" alt="Sunglint correction regression per band (Blue, Green, Red)" width="90%">
+  </p>
 
 * **Option B: Embeddings (`01_preprocessing_satellite_embeddings.ipynb`)**
-* Utilizes 64-dimensional vectors from Google's pre-trained satellite model.
-* Handles data extraction and preparation specifically for high-dimensional feature spaces.
-
-
+  * Utilizes 64-dimensional vectors from Google's pre-trained satellite model.
+  * Handles data extraction and preparation specifically for high-dimensional feature spaces.
 
 ### 2. Model Training (`02_model train-test.ipynb`)
 
 * Loads the training/testing datasets generated in Step 1.
 * Performs **Hyperparameter Tuning** on the XGBoost regressor.
-* Evaluates performance using **RMSE** (Root Mean Squared Error), **MAE**, and ****.
+* Evaluates performance using **RMSE** (Root Mean Squared Error), **MAE** (Mean Absolute Error), and **R²** (Coefficient of Determination).
 * Visualizes Feature Importance to interpret the model.
 
 ### 3. Inference & Mapping (`03_model inference.ipynb`)
@@ -90,6 +97,58 @@ Choose **one** of the following paths depending on your input data:
 * Predicts depth values for every pixel in the target satellite scene.
 * Exports the result as a **GeoTIFF**.
 * Generates a side-by-side visualization map (True Color vs. Predicted Depth).
+
+## Results
+
+Two parallel workflows are benchmarked: a **Standard Sentinel-2** spectral-bands model and a **Google Satellite Embeddings** deep-learning-feature model. Both are trained on the same SBES sounding data and evaluated on a held-out test split.
+
+### Standard Sentinel-2 Workflow
+
+**Validation Metrics (Test Set)**
+
+| Metric | Value |
+|--------|------:|
+| R²     | 0.945 |
+| RMSE   | 1.379 m |
+| MAE    | _TBD_ |
+
+**Feature Importance and Accuracy**
+
+<p align="center">
+  <img src="model/plot/feature_importance.png" alt="Top 5 feature importance (Sentinel-2 bands)" width="48%">
+  &nbsp;
+  <img src="model/plot/sdb_accuracy_plot_s2.png" alt="Predicted vs actual depth (Sentinel-2)" width="48%">
+</p>
+
+**Final Bathymetry Map**
+
+<p align="center">
+  <img src="output/SDB_Gili_Ketapang_2018_s2.png" alt="Final bathymetry map — Sentinel-2 workflow" width="90%">
+</p>
+
+### Google Satellite Embeddings Workflow
+
+**Validation Metrics (Test Set)**
+
+| Metric | Value |
+|--------|------:|
+| R²     | _TBD_ |
+| RMSE   | _TBD_ |
+| MAE    | _TBD_ |
+
+**Feature Importance and Accuracy**
+
+<p align="center">
+  <img src="model/embeddings/plot/feature_importance_embeddings.png" alt="Top feature importance (Embeddings)" width="48%">
+  &nbsp;
+  <img src="model/embeddings/plot/sdb_accuracy_plot_embeddings.png" alt="Predicted vs actual depth (Embeddings)" width="48%">
+</p>
+
+**Final Bathymetry Map**
+
+<p align="center">
+  <img src="output/embeddings/SDB_Gili_Ketapang_2018_embeddings.png" alt="Final bathymetry map — Embeddings workflow" width="90%">
+</p>
 
 ## Installation
 
