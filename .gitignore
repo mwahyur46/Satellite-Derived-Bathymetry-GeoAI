@@ -25,8 +25,6 @@ data/*.sbn
 data/*.sbx
 data/sounding/
 data/*.geojson
-
-# Keep folder structure visible on GitHub via .gitkeep
 !data/sounding/.gitkeep
 
 # Byte-compiled / optimized / DLL files
