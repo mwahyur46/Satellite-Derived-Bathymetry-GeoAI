@@ -11,7 +11,7 @@
 *.yaml
 *.jpg
 *.jpeg
-# *.png
+*.png
 *.qgz
 *.npy
 *.pkl

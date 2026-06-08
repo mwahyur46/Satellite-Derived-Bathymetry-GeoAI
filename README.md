@@ -110,7 +110,7 @@ Two parallel workflows are benchmarked: a **Standard Sentinel-2** spectral-bands
 |--------|------:|
 | R²     | 0.945 |
 | RMSE   | 1.379 m |
-| MAE    | _TBD_ |
+| MAE    | 0.9663 |
 
 **Feature Importance and Accuracy**
 
@@ -132,9 +132,9 @@ Two parallel workflows are benchmarked: a **Standard Sentinel-2** spectral-bands
 
 | Metric | Value |
 |--------|------:|
-| R²     | _TBD_ |
-| RMSE   | _TBD_ |
-| MAE    | _TBD_ |
+| R²     | 0.9453 |
+| RMSE   | 1.3786 |
+| MAE    | 0.9225 |
 
 **Feature Importance and Accuracy**
 
@@ -156,7 +156,7 @@ Ensure you have a Python environment (3.9+) set up. It is recommended to use `co
 
 ```bash
 # Clone the repository
-git clone https://github.com/mwahyur46/Satellite-Derived-Bathymetry-GeoAI.git
+git clone https://github.com/mwahyur46/satellite-derived-bathymetry-geoai.git
 
 # Install required packages
 pip install -r requirements.txt
@@ -174,4 +174,4 @@ The methodology and code structure in this repository are adapted from and inspi
 5. **Wicaksono, P., Harahap, S. D., & Hendriana, R.** (2023). Satellite-derived bathymetry from WorldView-2 based on linear and machine learning regression in the optically complex shallow water of the coral reef ecosystem of Kemujan Island. *Remote Sensing Applications Society and Environment*, 33, 101085. [https://doi.org/10.1016/j.rsase.2023.101085](https://doi.org/10.1016/j.rsase.2023.101085)
 
 ---
-*Created by [M. Wahyu R.](https://www.linkedin.com/in/mwahyur) | 2025*
+*Created by [M. Wahyu R.](https://www.linkedin.com/in/mwahyur) | 2026*
