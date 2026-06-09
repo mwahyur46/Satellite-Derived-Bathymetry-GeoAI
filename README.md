@@ -38,6 +38,7 @@ To facilitate reproduction, a Google Earth Engine script is provided to download
 ## Repository Structure
 
 ```text
+satellite-derived-bathymetry-geoai/
 ├── data/
 │   ├── corrected/       # Preprocessed Sentinel-2 images (deglinted & masked)
 │   ├── embeddings/      # Google Satellite Embeddings rasters
